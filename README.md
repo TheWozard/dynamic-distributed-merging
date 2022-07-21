@@ -25,11 +25,11 @@ The context can be provided in a couple forms
 {
     "$priority": 2,
     "$method": "outer",
-    // ...data...
+    "data": "...",
     "object": {
         "$priority": -1,
         "$method": "outer",
-        // ...more data...
+        "data": "...",
     }
 }
 ```
@@ -43,9 +43,9 @@ The context can be provided in a couple forms
             "method": "outer"
         }
     ],
-    // ...data...
+    "data": "...",
     "object": {
-        // ...more data...
+        "data": "...",
     }
 }
 ```
@@ -53,9 +53,9 @@ The context can be provided in a couple forms
 ```JSON
 {
     "$meta-merge-doc": "https://document.host/merge/schemaV1",
-    // ...data...
+    "data": "...",
     "object": {
-        // ...more data...
+        "data": "...",
     }
 }
 ```
