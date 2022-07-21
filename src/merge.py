@@ -1,15 +1,18 @@
 from typing import Dict, List
 
-
-def merge(*argv: List[Dict]) -> Dict:
-    return _merge_dict(*argv)
+from src.context import MergeContext, MergeDocument
 
 
-def _merge_dict(*argv: List[Dict]) -> Dict:
-    # TODO
-    return argv[0]
+def merge(*argv: Dict) -> Dict:
+    return _merge_dict(*[
+        MergeDocument(context=MergeContext(), document=document) for document in argv
+    ])
 
 
-def _merge_list(*argv: List[List]) -> List:
+def _merge_dict(*argv: MergeDocument) -> Dict:
+    return argv[0].context.method()(*argv)
+
+
+def _merge_list(*argv: List) -> List:
     # TODO
     pass

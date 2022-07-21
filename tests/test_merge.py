@@ -16,7 +16,11 @@ class TestMerge(unittest.TestCase):
 
     def test_basic_merge(self):
         cases = [
-            TestCase(name='empty_dicts', input=[{}, {}], expected={})
+            TestCase(name='empty_dicts', input=[{}, {}], expected={}),
+            TestCase(name='simple_merge', input=[{"A": "a"}, {
+                     "B": "b"}], expected={"A": "a", "B": "b"}),
+            TestCase(name='overlapping_merge', input=[{"A": "a"}, {
+                     "A": "b"}], expected={"A": "a"}),
         ]
 
         for case in cases:
