@@ -1,6 +1,6 @@
 import unittest
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import List
 
 from src.context import MergeContext, MergeDocument
 

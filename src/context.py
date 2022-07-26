@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List
+from typing import Dict, List
 from dataclasses import dataclass
 
 
@@ -23,7 +23,7 @@ class MergeDocument:
 
     def valid_keys(self):
         for key in self.document:
-            if not key.startswith("$") and (self.context.allow_nones or self.document[key] != None):
+            if not key.startswith("$") and (self.context.allow_nones or self.document[key] is not None):
                 yield key, self.document[key]
 
     def get_sort_key(self):
