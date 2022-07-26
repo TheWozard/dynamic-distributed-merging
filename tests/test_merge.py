@@ -21,6 +21,8 @@ class TestMerge(unittest.TestCase):
                      "B": "b"}], expected={"A": "a", "B": "b"}),
             TestCase(name='overlapping_merge', input=[{"A": "a"}, {
                      "A": "b"}], expected={"A": "a"}),
+            TestCase(name='recursive_object_merge', input=[{"A": "a", "B": {"C": "c"}}, {
+                "A": "b", "B": {"D": "d"}}], expected={"A": "a", "B": {"C": "c", "D": "d"}}),
         ]
 
         for case in cases:

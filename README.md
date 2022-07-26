@@ -2,7 +2,7 @@
 [![Tests](https://github.com/TheWozard/dynamic-distributed-merging/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/TheWozard/dynamic-distributed-merging/actions/workflows/test.yml)
 [![Linting](https://github.com/TheWozard/dynamic-distributed-merging/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/TheWozard/dynamic-distributed-merging/actions/workflows/lint.yml)
 
-A POC concept for a protocol for merging distributed json documents with dynamic sub object priority.
+A POC concept for an algorithm for merging distributed json documents with dynamic sub object priority.
 
 ## Problem
 A set of json documents need to be deeply merged together. Documents contain potentially overlapping objects,lists,and fields. Documents may have different merge orders per element in the document.
