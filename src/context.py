@@ -23,7 +23,7 @@ class MergeDocument:
 
     def valid_keys(self):
         for key in self.document:
-            if self.context.allow_nones or self.document[key] != None:
+            if not key.startswith("$") and (self.context.allow_nones or self.document[key] != None):
                 yield key, self.document[key]
 
     def get_sort_key(self):

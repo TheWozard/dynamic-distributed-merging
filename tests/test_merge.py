@@ -23,6 +23,8 @@ class TestMerge(unittest.TestCase):
                      "A": "b"}], expected={"A": "a"}),
             TestCase(name='recursive_object_merge', input=[{"A": "a", "B": {"C": "c"}}, {
                 "A": "b", "B": {"D": "d"}}], expected={"A": "a", "B": {"C": "c", "D": "d"}}),
+            TestCase(name='$_is_ignored', input=[
+                     {"A": "a", "$ignore": "data"}], expected={"A": "a"}),
         ]
 
         for case in cases:
