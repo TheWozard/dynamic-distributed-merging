@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 import unittest
 
-from src.merge import merge
+from src.merge import no_context_merge
 
 
 @dataclass
@@ -14,21 +14,29 @@ class TestCase:
 
 class TestMerge(unittest.TestCase):
 
-    def test_basic_merge(self):
+    def test_no_context_merge(self):
         cases = [
             TestCase(name='empty_dicts', input=[{}, {}], expected={}),
             TestCase(name='simple_merge', input=[{"A": "a"}, {
                      "B": "b"}], expected={"A": "a", "B": "b"}),
             TestCase(name='overlapping_merge', input=[{"A": "a"}, {
                      "A": "b"}], expected={"A": "a"}),
+            TestCase(name='objects', input=[{"A": {}}, {
+                     "B": {}}], expected={"A": {}, "B": {}}),
             TestCase(name='recursive_object_merge', input=[{"A": "a", "B": {"C": "c"}}, {
                 "A": "b", "B": {"D": "d"}}], expected={"A": "a", "B": {"C": "c", "D": "d"}}),
             TestCase(name='$_is_ignored', input=[
                      {"A": "a", "$ignore": "data"}], expected={"A": "a"}),
+            TestCase(name='list_of_strings', input=[
+                     {"A": ['a', 'à', 'á']}, {"A": ['â']}], expected={"A": ['a', 'à', 'á', 'â']}),
+            TestCase(name='mixed_list', input=[
+                     {"A": [{'C': 'c'}, [3], 1, 'a']}, {"A": [{'D': 'd'}, [4], 2, 'b']}], expected={"A": [{'C': 'c'}, [3], 1, 'a', {'D': 'd'}, [4], 2, 'b']}),
+            TestCase(name='list_ids', input=[
+                     {"A": [{'$id': '1', 'A': 'a'}]}, {"A": [{'$id': '1', 'B': 'b'}]}], expected={"A": [{'A': 'a', 'B': 'b'}]}),
         ]
 
         for case in cases:
-            actual = merge(*case.input)
+            actual = no_context_merge(*case.input)
             self.assertDictEqual(
                 case.expected,
                 actual,

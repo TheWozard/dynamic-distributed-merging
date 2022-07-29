@@ -2,74 +2,69 @@ import unittest
 from dataclasses import dataclass
 from typing import List
 
-from src.context import MergeContext, MergeDocument
+from src.context import ContextDocument, MergeContext
 
 
-def simple_doc(priority=0, order=0) -> MergeDocument:
-    return MergeDocument(context=MergeContext(
-        priority=priority, order=order), document={})
+class TestContextDocument(unittest.TestCase):
 
-
-class TestContext(unittest.TestCase):
-
-    def test_document_sort(self):
+    def test_get_sort_key(self):
         @dataclass
         class TestCase:
             name: str
-            input: List[MergeDocument]
-            expected: List[MergeDocument]
+            input: List[MergeContext]
+            expected: List[MergeContext]
 
         cases = [
             TestCase(name='empty_dicts', input=[], expected=[]),
             TestCase(name='single_doc', input=[
-                simple_doc(priority=0, order=0),
+                MergeContext(priority=0, order=0),
             ], expected=[
-                simple_doc(priority=0, order=0),
+                MergeContext(priority=0, order=0),
             ]),
             TestCase(name='priority', input=[
-                simple_doc(priority=1, order=0),
-                simple_doc(priority=0, order=0),
+                MergeContext(priority=1, order=0),
+                MergeContext(priority=0, order=0),
             ], expected=[
-                simple_doc(priority=1, order=0),
-                simple_doc(priority=0, order=0),
+                MergeContext(priority=1, order=0),
+                MergeContext(priority=0, order=0),
             ]),
             TestCase(name='order', input=[
-                simple_doc(priority=0, order=0),
-                simple_doc(priority=0, order=1),
+                MergeContext(priority=0, order=0),
+                MergeContext(priority=0, order=1),
             ], expected=[
-                simple_doc(priority=0, order=0),
-                simple_doc(priority=0, order=1),
+                MergeContext(priority=0, order=0),
+                MergeContext(priority=0, order=1),
             ]),
             TestCase(name='in_order', input=[
-                simple_doc(priority=1, order=0),
-                simple_doc(priority=1, order=1),
-                simple_doc(priority=0, order=2),
-                simple_doc(priority=0, order=3),
+                MergeContext(priority=1, order=0),
+                MergeContext(priority=1, order=1),
+                MergeContext(priority=0, order=2),
+                MergeContext(priority=0, order=3),
             ], expected=[
-                simple_doc(priority=1, order=0),
-                simple_doc(priority=1, order=1),
-                simple_doc(priority=0, order=2),
-                simple_doc(priority=0, order=3),
+                MergeContext(priority=1, order=0),
+                MergeContext(priority=1, order=1),
+                MergeContext(priority=0, order=2),
+                MergeContext(priority=0, order=3),
             ]),
             TestCase(name='mixed', input=[
-                simple_doc(priority=1, order=0),
-                simple_doc(priority=0, order=1),
-                simple_doc(priority=1, order=2),
-                simple_doc(priority=0, order=3),
-                simple_doc(priority=2, order=4),
-                simple_doc(priority=-1, order=5),
+                MergeContext(priority=1, order=0),
+                MergeContext(priority=0, order=1),
+                MergeContext(priority=1, order=2),
+                MergeContext(priority=0, order=3),
+                MergeContext(priority=2, order=4),
+                MergeContext(priority=-1, order=5),
             ], expected=[
-                simple_doc(priority=2, order=4),
-                simple_doc(priority=1, order=0),
-                simple_doc(priority=1, order=2),
-                simple_doc(priority=0, order=1),
-                simple_doc(priority=0, order=3),
-                simple_doc(priority=-1, order=5),
+                MergeContext(priority=2, order=4),
+                MergeContext(priority=1, order=0),
+                MergeContext(priority=1, order=2),
+                MergeContext(priority=0, order=1),
+                MergeContext(priority=0, order=3),
+                MergeContext(priority=-1, order=5),
             ]),
         ]
 
         for case in cases:
-            actual = sorted(case.input, key=MergeDocument.get_sort_key)
+            actual = sorted(case.input, key=MergeContext.get_sort_key)
             self.assertListEqual(
                 case.expected,
                 actual,

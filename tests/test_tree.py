@@ -1,6 +1,6 @@
 import unittest
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Optional
 
 from src.tree import MostRecentTree
 
