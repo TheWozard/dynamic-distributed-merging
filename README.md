@@ -1,6 +1,7 @@
 # Dynamic Distributed Merging
 [![Tests](https://github.com/TheWozard/dynamic-distributed-merging/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/TheWozard/dynamic-distributed-merging/actions/workflows/test.yml)
 [![Linting](https://github.com/TheWozard/dynamic-distributed-merging/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/TheWozard/dynamic-distributed-merging/actions/workflows/lint.yml)
+[![Coverage Status](https://coveralls.io/repos/github/TheWozard/dynamic-distributed-merging/badge.svg?branch=master)](https://coveralls.io/github/TheWozard/dynamic-distributed-merging?branch=master)
 
 A POC concept for an algorithm for merging distributed json documents with dynamic sub object priority.
 
