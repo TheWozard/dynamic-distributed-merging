@@ -2,10 +2,10 @@ import unittest
 from dataclasses import dataclass
 from typing import List
 
-from src.context import ContextDocument, MergeContext
+from src.context import MergeContext
 
 
-class TestContextDocument(unittest.TestCase):
+class TestMergeContext(unittest.TestCase):
 
     def test_get_sort_key(self):
         @dataclass

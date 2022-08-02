@@ -60,7 +60,7 @@ class ValueDocument:
 
     def get_document_by_key(self, key: str) -> 'Optional[ValueDocument]':
         # if the context still has a branch that covers this key we continue to
-        # participate as a ContextDocument
+        # participate as an empty value
         if key in self.context.nodes:
             return ValueDocument(
                 context=self.context.get_or_persist(key)
