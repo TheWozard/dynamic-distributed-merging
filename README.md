@@ -20,6 +20,8 @@ This context specifies a scope and attributes that govern that scope.
 | Allow None | `bool` | `false` | When a resolved value is found, should we consider None to be a valid one. Behaves slightly differently between values and arrays/objects. In the case of values a value that is None will be skipped over for consideration in the merge unless it has a context of True for Allow None. In the case of arrays/objects when a node is resolved, if the resolving value is None it will by default be discarded, unless the array/object has an Allow None of True.
 | Allow Empty | `bool` | `false` | Does not affect value resolution. Decides if when an array/list is resolved if an empty array/list should be returned or by default a None is returned in its place
 
+The core concept is expandable with new features in the case of more control being needed
+
 > It was previously considered the inclusion of a "method" attribute that controlled the behavior of Terminal, Allow None, and Allow Empty. This was discarded as an implementation detail of the parser and not the core algorithm
 
 ### Providing the Context
