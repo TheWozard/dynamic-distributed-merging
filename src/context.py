@@ -58,9 +58,6 @@ class MergeContext(MergeData):
 class DictMergeContext(MergeContext):
     nodes: Dict[str, MergeContext] = field(default_factory=dict)
 
-    def is_important(self):
-        return True
-
     def context_from_key(self, key: str) -> Tuple['MergeContext', bool]:
         if key in self.nodes:
             return self.nodes[key].update(self), True

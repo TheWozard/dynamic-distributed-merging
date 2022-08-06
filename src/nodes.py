@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 
@@ -49,13 +49,13 @@ class INode(ABC):
     # Merges all passed objects together.
     # The passed list of docs is expected to already include self.
     # Passed documents are merged in order passed.
+    @abstractmethod
     def merge_ordered(self, documents: List['INode']) -> any:
-        if len(documents) > 1 and not self.is_terminal():
-            return documents[1].merge_ordered(documents[1:])
-        return None
+        pass
 
+    @abstractmethod
     def willing_to_drive(self):
-        return False
+        pass
 
     # Makes it easier to sort
 
