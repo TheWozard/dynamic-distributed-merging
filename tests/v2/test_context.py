@@ -103,13 +103,24 @@ class TestMergeContext(unittest.TestCase):
                 merge=MergeContext(),
                 expected=MergeContext(),
             ),
+            TestCase(
+                name='can_updated_all_params',
+                original=MergeContext(),
+                merge=MergeContext(priority=1, order=1, terminal=True, allow_none=True, allow_empty=True),
+                expected=MergeContext(priority=1, order=1, terminal=True, allow_none=True, allow_empty=True),
+            ),
+            TestCase(
+                name='wont_update_any_params_that_are_already_set',
+                original=MergeContext(priority=0, order=0, terminal=False, allow_none=False, allow_empty=False),
+                merge=MergeContext(priority=1, order=1, terminal=True, allow_none=True, allow_empty=True),
+                expected=MergeContext(priority=0, order=0, terminal=False, allow_none=False, allow_empty=False),
+            ),
         ]
 
         for case in cases:
-            case.original.merge_in(case.merge)
             self.assertEqual(
                 case.expected,
-                case.original,
+                case.original.update(case.merge),
                 f"failed test {case.name} expected {case.expected}, actual {case.original}",
             )
 
