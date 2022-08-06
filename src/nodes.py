@@ -5,11 +5,9 @@ from dataclasses import dataclass
 from src.context import MergeContext
 
 
-def merge(documents: 'List[INode]') -> any:
+def merge(documents: List['INode']) -> any:
     ordered = sorted([doc for doc in documents if doc is not None],
                      key=INode.get_sort_key)
-    if len(ordered) == 0:
-        return None
     for doc in ordered:
         if doc.willing_to_drive():
             return doc.merge_ordered(ordered)
@@ -84,21 +82,24 @@ class DictNode(INode):
     value: Dict[str, any]
 
     def get_keys(self) -> List[str]:
+        # self.context.is_valid_key(key) is potentially a leaky abstraction of
+        # how we are intending to load data. This should probably be removed.
         return [key for key in self.value if self.context.is_valid_key(key)]
 
-    def node_from_key(self, key) -> Optional['INode']:
+    def node_from_key(self, key) -> Optional[INode]:
         if key in self.value:
             return data_to_node(self.context.context_from_key(key)[0], self.value[key])
         return super().node_from_key(key)
 
     def get_id(self, id_key='$id') -> any:
+        # TODO: Add over_ride id key to context
         if id_key in self.value:
             return self.value[id_key]
         return None
 
     def merge_ordered(self, documents: List[INode]) -> any:
         result = {}
-        for i, doc in enumerate(documents):
+        for doc in documents:
             for key in doc.get_keys():
                 if key not in result:
                     value = merge([doc.node_from_key(key) for doc in documents])
@@ -122,7 +123,7 @@ class ListNode(INode):
 
     def get_nodes(self):
         self._ensure_cache()
-        return self._node_cache + super().get_nodes()
+        return self._node_cache
 
     def node_from_id(self, _id: any) -> Optional[INode]:
         self._ensure_cache()
@@ -135,6 +136,7 @@ class ListNode(INode):
         ids_seen = set()
         for i, doc in enumerate(documents):
             for node in doc.get_nodes():
+                # TODO: Add default context key control to context
                 _id = node.get_id()
                 if _id is None or _id not in ids_seen:
                     ids_seen.add(_id)
@@ -160,7 +162,7 @@ class ListNode(INode):
                 node.context = self.context.context_from_id(node.get_id())[0]
 
 
-def data_to_node(context: MergeContext, value: any) -> 'INode':
+def data_to_node(context: MergeContext, value: any) -> INode:
     """Converts an standard json value to its equivalent node"""
     if type(value) is dict:
         return DictNode(value=value, context=context)
