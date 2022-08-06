@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 
-from src.v2.context import MergeContext
+from src.context import MergeContext
 
 
 def merge(documents: 'List[INode]') -> any:

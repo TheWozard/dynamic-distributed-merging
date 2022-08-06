@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from typing import Dict, List
 import unittest
 
-from src.v2.nodes import INode, data_to_node, merge
-from src.v2.context import DictMergeContext, ListMergeContext, MergeContext
+from src.nodes import INode, data_to_node, merge
+from src.context import DictMergeContext, ListMergeContext, MergeContext
 
 
 class TestMerge(unittest.TestCase):
