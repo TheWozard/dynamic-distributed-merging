@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
 
 
 @dataclass
@@ -10,6 +10,9 @@ class MergeData():
     terminal: Optional[bool] = None
     allow_none: Optional[bool] = None
     allow_empty: Optional[bool] = None
+
+    excluded_prefix: Optional[str] = '$'
+    id_key: Optional[str] = '$id'
 
     def get_priority(self):
         return self.priority or 0
@@ -30,7 +33,12 @@ class MergeData():
         return self.terminal or False
 
     def is_valid_key(self, key):
-        return not key.startswith('$')
+        return not key.startswith(self.excluded_prefix)
+
+    def get_id(self, raw):
+        if type(raw) is dict and self.id_key in raw:
+            return raw[self.id_key]
+        return None
 
     # Node behavior
 
@@ -50,7 +58,7 @@ class MergeContext(MergeData):
     def context_from_key(self, key: str) -> Tuple['MergeContext', bool]:
         return self, False
 
-    def context_from_id(self, _id: any) -> Tuple['MergeContext', bool]:
+    def context_from_id_index(self, _id: any, index: Optional[int]) -> Tuple['MergeContext', bool]:
         return self, False
 
 
@@ -67,11 +75,14 @@ class DictMergeContext(MergeContext):
 @dataclass
 class ListMergeContext(MergeContext):
     ids: Dict[any, MergeContext] = field(default_factory=dict)
+    index: List[MergeContext] = field(default_factory=list)
     default: Optional[MergeContext] = None
 
-    def context_from_id(self, _id: any) -> Tuple['MergeContext', bool]:
-        if _id is None:
+    def context_from_id_index(self, _id: any, index: Optional[int]) -> Tuple['MergeContext', bool]:
+        if self.default is not None and _id is None and index is None:
             return self.default.update(self), True
         if _id in self.nodes:
             return self.nodes[_id].update(self), True
+        if index is not None and index < len(self.index) and self.index[index] is not None:
+            return self.index[index].update(self), True
         return MergeContext().update(self), False

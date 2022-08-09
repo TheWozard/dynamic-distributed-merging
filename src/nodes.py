@@ -38,8 +38,8 @@ class INode(ABC):
     def get_id(self, id_key='$key') -> any:
         return None
 
-    def node_from_id(self, _id: any) -> Optional['INode']:
-        context, is_important = self.context.context_from_id(_id)
+    def node_from_id_index(self, _id: any, index: Optional[int]) -> Optional['INode']:
+        context, is_important = self.context.context_from_id_index(_id, index)
         if is_important:
             return ValueNode(context, None)
         return None
@@ -91,17 +91,16 @@ class DictNode(INode):
             return data_to_node(self.context.context_from_key(key)[0], self.value[key])
         return super().node_from_key(key)
 
-    def get_id(self, id_key='$id') -> any:
-        # TODO: Add over_ride id key to context
-        if id_key in self.value:
-            return self.value[id_key]
-        return None
+    def get_id(self) -> any:
+        return self.context.get_id(self.value)
 
     def merge_ordered(self, documents: List[INode]) -> any:
         result = {}
+        seen = set()
         for doc in documents:
             for key in doc.get_keys():
-                if key not in result:
+                if key not in seen:
+                    seen.add(key)
                     value = merge([doc.node_from_key(key) for doc in documents])
                     if value is not None or doc.context.is_allow_none():
                         result[key] = value
@@ -125,24 +124,22 @@ class ListNode(INode):
         self._ensure_cache()
         return self._node_cache
 
-    def node_from_id(self, _id: any) -> Optional[INode]:
+    def node_from_id_index(self, _id: any, index: Optional[int]) -> Optional[INode]:
         self._ensure_cache()
         if _id in self._id_cache:
             return self._id_cache[_id]
-        return super().node_from_id(_id)
+        return super().node_from_id_index(_id, index)
 
     def merge_ordered(self, documents: List[INode]) -> any:
         result = []
         ids_seen = set()
         for i, doc in enumerate(documents):
-            for node in doc.get_nodes():
-                # TODO: Add default context key control to context
-                _id = node.get_id()
+            for _id, node in doc.get_nodes():
                 if _id is None or _id not in ids_seen:
                     ids_seen.add(_id)
                     other = documents[:]
                     other.pop(i)
-                    value = merge([node] + [doc.node_from_id(_id) for doc in other])
+                    value = merge([node] + [doc.node_from_id_index(_id, None) for doc in other])
                     if value is not None or doc.context.is_allow_none():
                         result.append(value)
             if doc.context.is_terminal():
@@ -156,10 +153,14 @@ class ListNode(INode):
 
     def _ensure_cache(self):
         if self._node_cache is None or self._id_cache is None:
-            self._node_cache = [data_to_node(None, element) for element in self.value]
-            self._id_cache = {node.get_id(): node for node in self._node_cache if node.get_id() is not None}
-            for node in self._node_cache:
-                node.context = self.context.context_from_id(node.get_id())[0]
+            self._node_cache = []
+            self._id_cache = {}
+            for index, element in enumerate(self.value):
+                _id = self.context.get_id(element)
+                node = data_to_node(self.context.context_from_id_index(_id, index)[0], element)
+                self._node_cache.append((_id, node))
+                if _id is not None:
+                    self._id_cache[_id] = node
 
 
 def data_to_node(context: MergeContext, value: any) -> INode:

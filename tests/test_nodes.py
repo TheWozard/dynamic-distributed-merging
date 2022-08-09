@@ -1,9 +1,9 @@
+import unittest
 from dataclasses import dataclass
 from typing import Dict, List
-import unittest
 
-from src.nodes import INode, data_to_node, merge
 from src.context import DictMergeContext, ListMergeContext, MergeContext
+from src.nodes import INode, data_to_node, merge
 
 
 class TestMerge(unittest.TestCase):
@@ -83,7 +83,7 @@ class TestMerge(unittest.TestCase):
                 data_to_node(MergeContext(), 'Success'),
             ], expected='Success'),
 
-            # Ordering Cases
+            # # Ordering Cases
             TestCase(name='order_is_based_on_priority_highest_first', input=[
                 data_to_node(MergeContext(), 'Second'),
                 data_to_node(MergeContext(priority=1), 'First'),
@@ -110,9 +110,6 @@ class TestMerge(unittest.TestCase):
                 data_to_node(MergeContext(priority=1, allow_none=True), {'A': None}),
                 data_to_node(MergeContext(), {'A': 'Success'}),
             ], expected={'A': None}),
-            TestCase(name='ignores_keys_that_start_with_', input=[
-                data_to_node(MergeContext(), {'$ignore': 'data'}),
-            ], expected=None),
 
             # Deep Merge Cases
             TestCase(name='merge_dicts_identical_key', input=[
